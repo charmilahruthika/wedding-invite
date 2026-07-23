@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Celebrations Invitation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Petals -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        },
+                        cream: '#FDFBF7',
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        telugu: ['"Noto Sans Telugu"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Themes */
+        .theme-gold {
+            --bg-main: #FDFBF7;
+            --card-bg: #FFFFFF;
+            --accent-main: #d97706;
+            --accent-dark: #78350f;
+            --border-color: #e5c158;
+            --text-heading: #451a03;
+        }
+        .theme-maroon {
+            --bg-main: #fdf2f2;
+            --card-bg: #ffffff;
+            --accent-main: #b91c1c;
+            --accent-dark: #450a0a;
+            --border-color: #f87171;
+            --text-heading: #370606;
+        }
+        .theme-indigo {
+            --bg-main: #f0f3ff;
+            --card-bg: #ffffff;
+            --accent-main: #3b82f6;
+            --accent-dark: #1e1b4b;
+            --border-color: #818cf8;
+            --text-heading: #0f172a;
+        }
+        .theme-teal {
+            --bg-main: #f0fdfa;
+            --card-bg: #ffffff;
+            --accent-main: #0d9488;
+            --accent-dark: #134e4a;
+            --border-color: #5eead4;
+            --text-heading: #042f2e;
+        }
+        .theme-marigold {
+            --bg-main: #fffbe0;
+            --card-bg: #ffffff;
+            --accent-main: #ea580c;
+            --accent-dark: #7c2d12;
+            --border-color: #facc15;
+            --text-heading: #451a03;
+        }
+        .theme-rose {
+            --bg-main: #fff1f2;
+            --card-bg: #ffffff;
+            --accent-main: #e11d48;
+            --accent-dark: #881337;
+            --border-color: #fca5a5;
+            --text-heading: #4c0519;
+        }
+        .theme-emerald {
+            --bg-main: #f0fdf4;
+            --card-bg: #ffffff;
+            --accent-main: #16a34a;
+            --accent-dark: #14532d;
+            --border-color: #86efac;
+            --text-heading: #052e16;
+        }
+        .theme-lavender {
+            --bg-main: #faf5ff;
+            --card-bg: #ffffff;
+            --accent-main: #9333ea;
+            --accent-dark: #581c87;
+            --border-color: #c084fc;
+            --text-heading: #3b0764;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            transition: background-color 0.4s ease;
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(var(--accent-main) 0.5px, transparent 0.5px), radial-gradient(var(--accent-main) 0.5px, var(--bg-main) 0.5px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            opacity: 0.95;
+        }
+
+        .gold-border {
+            border: 2px solid var(--border-color);
+            box-shadow: inset 0 0 15px rgba(217, 119, 6, 0.08);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent-main) 50%, var(--accent-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .pulse-glow {
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        /* Canvas background for falling petals */
+        #petalCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Interactive Envelope Animations */
+        #envelopeOverlay {
+            transition: opacity 0.8s ease, visibility 0.8s ease, transform 0.8s ease;
+        }
+        #envelopeOverlay.opened {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+        .envelope-flap {
+            transition: transform 0.6s ease-in-out;
+            transform-origin: top;
+        }
+        .envelope-flap.open {
+            transform: rotateX(180deg);
+        }
+    </style>
+</head>
+<body class="theme-gold bg-pattern font-sans text-gray-800 antialiased min-h-screen flex flex-col justify-between relative overflow-x-hidden">
+
+    <canvas id="petalCanvas"></canvas>
+
+    <!-- ROYAL INTERACTIVE ENVELOPE OVERLAY -->
+    <div id="envelopeOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-amber-950/95 backdrop-blur-md">
+        <div class="relative w-full max-w-md bg-gradient-to-b from-amber-900 to-amber-950 rounded-3xl p-6 sm:p-8 gold-border shadow-2xl text-center space-y-6 overflow-hidden">
+            <!-- Decorative Gold Accents -->
+            <div class="absolute -top-12 -left-12 w-28 h-28 border-4 border-amber-400/20 rounded-full"></div>
+            <div class="absolute -bottom-12 -right-12 w-28 h-28 border-4 border-amber-400/20 rounded-full"></div>
+
+            <div class="space-y-2 relative z-10">
+                <div class="text-4xl floating">🪔</div>
+                <p class="font-telugu text-amber-300 text-xl font-bold tracking-wide">
+                    మా ప్రియమైన వారికి ఆహ్వానం
+                </p>
+                <p class="text-[11px] uppercase tracking-widest text-amber-200/80 font-bold">You are cordially invited</p>
+            </div>
+
+            <!-- Envelope Card Motif -->
+            <div class="bg-amber-900/60 border border-amber-400/30 rounded-2xl p-6 space-y-3 relative z-10 shadow-inner">
+                <p class="font-cursive text-3xl text-amber-300 font-bold" id="envelopeCoupleNames">
+                    Hruthika & Akhil
+                </p>
+                <p class="text-xs text-amber-100/90 leading-relaxed">
+                    We request the honor of your presence and blessings on our special occasion.
+                </p>
+            </div>
+
+            <!-- Wax Seal Tap Button -->
+            <div class="relative z-10 pt-2">
+                <button id="openEnvelopeBtn" onclick="openEnvelope()" class="pulse-glow inline-flex flex-col items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 via-amber-500 to-amber-700 text-amber-950 font-bold border-4 border-amber-200 shadow-2xl hover:scale-105 transition transform active:scale-95 cursor-pointer">
+                    <span class="text-2xl mb-0.5">🌸</span>
+                    <span class="text-[9px] uppercase tracking-wider font-extrabold leading-tight text-center px-1">Tap to<br>Open</span>
+                </button>
+            </div>
+
+            <p class="text-[10px] text-amber-400/70 italic relative z-10">Click seal to open invitation</p>
+        </div>
+    </div>
+
+    <header class="w-full py-3 px-4 border-b border-amber-200/60 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
+        <div class="max-w-xl mx-auto flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5">
+                <span class="text-xs tracking-wider text-amber-800 font-bold uppercase font-serif">✨ Wedding Invite</span>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Re-open Envelope Button -->
+                <button onclick="reopenEnvelope()" class="p-2 text-xs rounded-full bg-amber-50 text-amber-800 hover:bg-amber-100 transition border border-amber-200 flex items-center gap-1" title="View Envelope">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <span class="hidden sm:inline text-[11px] font-semibold">Envelope</span>
+                </button>
+
+                <!-- Music Toggle Button -->
+                <button id="musicBtn" onclick="toggleAudio()" class="p-2 text-xs rounded-full bg-amber-50 text-amber-800 hover:bg-amber-100 transition border border-amber-200 flex items-center gap-1" title="Toggle Shehnai Soundscape">
+                    <i id="musicIcon" class="fa-solid fa-music"></i>
+                    <span id="musicText" class="hidden sm:inline text-[11px] font-semibold">Play Music</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-xl mx-auto px-4 py-6 w-full space-y-6 relative z-20">
+
+        <!-- Main Hero Card -->
+        <div class="bg-white/95 rounded-3xl p-6 sm:p-8 text-center gold-border card-shadow relative overflow-hidden">
+            <!-- Decorative Kalasam Motif -->
+            <div class="text-amber-600 text-4xl mb-1 floating">
+                🪔
+            </div>
+            
+            <p class="font-telugu text-amber-900 text-lg font-bold tracking-wide mb-1" id="teluguGreeting">
+                మా ప్రియమైన వారికి ఆహ్వానం
+            </p>
+            <p class="text-[11px] uppercase tracking-widest text-amber-700 font-bold mb-3">Together with our friends & family</p>
+            
+            <p class="text-xs text-gray-500 italic mb-1">We joyfully request your blessings for the wedding of</p>
+            
+            <!-- Dynamic Couple Names -->
+            <h1 class="font-cursive text-4xl sm:text-5xl gradient-text my-2 py-1 font-bold leading-tight" id="coupleNamesDisplay">
+                Hruthika & Akhil
+            </h1>
+
+            <p class="text-gray-600 text-xs sm:text-sm mt-3 max-w-sm mx-auto leading-relaxed">
+                Join us as we embark on this beautiful journey of love and togetherness! Your presence will double our joy.
+            </p>
+
+            <!-- Interactive Blessings Button -->
+            <div class="mt-5">
+                <button onclick="triggerPetalBurst()" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs py-2.5 px-5 rounded-full shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
+                    <span>🌸 Shower Blessings 🌸</span>
+                </button>
+            </div>
+
+            <!-- Countdown Timer -->
+            <div class="mt-6 pt-5 border-t border-amber-100">
+                <p class="text-[11px] uppercase tracking-widest text-gray-500 mb-3 font-bold flex items-center justify-center gap-1">
+                    <i class="fa-regular fa-clock text-amber-600"></i> Countdown to Festivities
+                </p>
+                <div class="grid grid-cols-4 gap-2 text-center" id="countdown">
+                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                        <span id="days" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Days</span>
+                    </div>
+                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                        <span id="hours" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Hours</span>
+                    </div>
+                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                        <span id="minutes" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Mins</span>
+                    </div>
+                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                        <span id="seconds" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Secs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Title: Schedule -->
+        <div class="text-center space-y-1 pt-2">
+            <h2 class="font-serif text-2xl font-bold text-amber-950 flex items-center justify-center gap-2">
+                <span>🌺</span> Celebration Schedule <span>🌺</span>
+            </h2>
+            <div class="w-20 h-0.5 bg-amber-400 mx-auto rounded-full"></div>
+        </div>
+
+        <!-- Venue 1 Block: Kothapeta Events -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between text-amber-900 font-bold text-xs px-1 border-b border-amber-200 pb-1">
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot text-amber-600"></i>
+                    <span>PART 1: KOTHAPETA EVENTS</span>
+                </span>
+                <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">Aug 20-21</span>
+            </div>
+
+            <!-- Event Card 1: Sangeet -->
+            <div class="bg-white rounded-2xl p-5 border border-amber-200/80 card-shadow hover:border-amber-400 transition relative">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="space-y-1.5 flex-1">
+                        <h3 class="font-serif text-2xl font-bold text-gray-900">Sangeet Celebration</h3>
+                        <div class="text-xs text-gray-600 font-medium space-y-1 pt-1">
+                            <p><i class="fa-regular fa-calendar text-amber-600 w-4"></i> Thursday, 20th August</p>
+                            <p><i class="fa-regular fa-clock text-amber-600 w-4"></i> 11:00 AM Onwards</p>
+                            <p class="text-gray-500 text-[11px]"><i class="fa-solid fa-shirt text-amber-600 w-4"></i> Vibe: Bright Indo-Western / Festive Ethnic</p>
+                        </div>
+                    </div>
+                    <div class="text-3xl bg-purple-50 p-2 rounded-2xl">💃</div>
+                </div>
+            </div>
+
+            <!-- Event Card 2: Pre-Wedding Reception -->
+            <div class="bg-white rounded-2xl p-5 border border-amber-200/80 card-shadow hover:border-amber-400 transition relative">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="space-y-1.5 flex-1">
+                        <h3 class="font-serif text-2xl font-bold text-gray-900">Pre-Wedding Reception</h3>
+                        <div class="text-xs text-gray-600 font-medium space-y-1 pt-1">
+                            <p><i class="fa-regular fa-calendar text-amber-600 w-4"></i> Thursday, 20th August</p>
+                            <p><i class="fa-regular fa-clock text-amber-600 w-4"></i> 8:00 PM Onwards</p>
+                            <p class="text-gray-500 text-[11px]"><i class="fa-solid fa-shirt text-amber-600 w-4"></i> Vibe: Evening Elegance</p>
+                        </div>
+                    </div>
+                    <div class="text-3xl bg-rose-50 p-2 rounded-2xl">🍽️</div>
+                </div>
+            </div>
+
+            <!-- Event Card 3: Pelli Muhurtham -->
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50/70 rounded-2xl p-5 border-2 border-amber-400 card-shadow relative">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="space-y-1.5 flex-1">
+                        <h3 class="font-serif text-2xl font-bold text-amber-950">Pelli Muhurtham</h3>
+                        <div class="text-xs text-amber-900 font-semibold space-y-1 pt-1">
+                            <p><i class="fa-regular fa-calendar text-amber-700 w-4"></i> 20th Night (21st Early Morning)</p>
+                            <p class="text-base font-bold text-amber-800"><i class="fa-regular fa-clock text-amber-700 w-4"></i> 3:53 AM Muhurtham</p>
+                            <p class="text-amber-800 text-[11px] font-normal"><i class="fa-solid fa-shirt text-amber-700 w-4"></i> Vibe: Traditional Silk Attire</p>
+                        </div>
+                    </div>
+                    <div class="text-3xl bg-amber-100 p-2 rounded-2xl">🪷</div>
+                </div>
+            </div>
+
+            <!-- Venue Info Box Kothapeta -->
+            <div class="bg-amber-950 text-white p-5 rounded-2xl space-y-3.5 shadow-md">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-utensils text-amber-400 mt-1"></i>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Hospitality</p>
+                        <p class="text-xs font-semibold text-amber-50">Delicious Traditional Lunch & Gala Dinner Served</p>
+                    </div>
+                </div>
+                <hr class="border-amber-800/80">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-map-pin text-amber-400 mt-1"></i>
+                    <div class="flex-1">
+                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Venue Location</p>
+                        <p class="text-sm font-bold text-white">Sri Kari Subhakari Convention</p>
+                        <p class="text-xs text-amber-200/90 mt-0.5 leading-snug">Bank Colony, Kothapeta, Andhra Pradesh 533223</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <a href="https://maps.app.goo.gl/Q4JZiPbDhQLiUVUk6" target="_blank" 
+                       class="flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center">
+                        <i class="fa-solid fa-diamond-turn-right"></i> Google Maps
+                    </a>
+                    <button onclick="addToCalendar('Kothapeta Wedding Events', 'Sangeet, Pre-Wedding & Pelli Muhurtham', 'Sri Kari Subhakari Convention, Kothapeta', '20260820T053000Z', '20260821T020000Z')" 
+                            class="flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 rounded-xl transition border border-amber-400/30 text-center">
+                        <i class="fa-regular fa-calendar-plus"></i> Add Calendar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider Motif -->
+        <div class="flex items-center justify-center gap-3 py-1 text-amber-600">
+            <div class="h-px bg-amber-300/60 flex-1"></div>
+            <span class="text-sm">🌸 🪷 🌸</span>
+            <div class="h-px bg-amber-300/60 flex-1"></div>
+        </div>
+
+        <!-- Venue 2 Block: Tuni Reception -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between text-amber-900 font-bold text-xs px-1 border-b border-amber-200 pb-1">
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot text-amber-600"></i>
+                    <span>PART 2: GRAND RECEPTION AT TUNI</span>
+                </span>
+                <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">Aug 22</span>
+            </div>
+
+            <!-- Event Card 4: Reception -->
+            <div class="bg-white rounded-2xl p-5 border border-amber-200/80 card-shadow hover:border-amber-400 transition relative">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="space-y-1.5 flex-1">
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                            🎉 Grand Celebration
+                        </span>
+                        <h3 class="font-serif text-2xl font-bold text-gray-900">Grand Wedding Reception</h3>
+                        <div class="text-xs text-gray-600 font-medium space-y-1 pt-1">
+                            <p><i class="fa-regular fa-calendar text-amber-600 w-4"></i> Saturday, 22nd August</p>
+                            <p><i class="fa-regular fa-clock text-amber-600 w-4"></i> 6:30 PM Onwards</p>
+                            <p class="text-gray-500 text-[11px]"><i class="fa-solid fa-shirt text-amber-600 w-4"></i> Vibe: Festive / Formal Attire</p>
+                        </div>
+                    </div>
+                    <div class="text-3xl bg-amber-50 p-2 rounded-2xl">🎉</div>
+                </div>
+            </div>
+
+            <!-- Venue Info Box Tuni -->
+            <div class="bg-amber-950 text-white p-5 rounded-2xl space-y-3.5 shadow-md">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-utensils text-amber-400 mt-1"></i>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Hospitality</p>
+                        <p class="text-xs font-semibold text-amber-50">Followed by Grand Gala Banquet Dinner</p>
+                    </div>
+                </div>
+                <hr class="border-amber-800/80">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-map-pin text-amber-400 mt-1"></i>
+                    <div class="flex-1">
+                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Venue Location</p>
+                        <p class="text-sm font-bold text-white">Sai SitaRama Convention Hall</p>
+                        <p class="text-xs text-amber-200/90 mt-0.5 leading-snug">Near Narayana School, Tuni, Andhra Pradesh 533401</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <a href="https://maps.app.goo.gl/932QwUEhFcQM6Gr17" target="_blank" 
+                       class="flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center">
+                        <i class="fa-solid fa-diamond-turn-right"></i> Google Maps
+                    </a>
+                    <button onclick="addToCalendar('Grand Wedding Reception', 'Grand Wedding Reception & Gala Dinner', 'Sai SitaRama Convention Hall, Tuni', '20260822T130000Z', '20260822T173000Z')" 
+                            class="flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 rounded-xl transition border border-amber-400/30 text-center">
+                        <i class="fa-regular fa-calendar-plus"></i> Add Calendar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive RSVP & Wishes Section -->
+        <div class="bg-white/90 border border-amber-200 rounded-3xl p-6 card-shadow space-y-4">
+            <div class="text-center space-y-1">
+                <span class="text-2xl">✍️</span>
+                <h3 class="font-serif text-2xl font-bold text-amber-950">RSVP & Send Blessings</h3>
+                <p class="text-xs text-gray-500">Let us know if you'll be joining, or leave a sweet wish!</p>
+            </div>
+
+            <form id="rsvpForm" onsubmit="handleRSVPSubmit(event)" class="space-y-3 pt-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Your Name</label>
+                        <input type="text" id="guestName" required placeholder="e.g. Ramesh & Family" 
+                               class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Attending Events?</label>
+                        <select id="attendanceSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30">
+                            <option value="Both Venues">Yes! Attending All Events</option>
+                            <option value="Kothapeta Only">Attending Kothapeta Events</option>
+                            <option value="Tuni Only">Attending Tuni Reception</option>
+                            <option value="In Spirit">Sending Love & Blessings</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Your Wishes / Note for Couple</label>
+                    <textarea id="guestWish" rows="2" placeholder="Wishing you a lifetime of joy, love, and laughter! 💕" 
+                              class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition shadow-xs">
+                    <i class="fa-solid fa-paper-plane mr-1.5"></i> Submit RSVP & Wish
+                </button>
+            </form>
+
+            <!-- Digital Wishes Wall -->
+            <div class="pt-4 border-t border-amber-100">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-amber-800 mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-heart text-rose-500"></i> Warm Wishes from Friends & Family
+                </p>
+                <div id="wishesContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    <!-- Default Wishes -->
+                    <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-100 text-xs">
+                        <div class="flex justify-between items-center font-bold text-amber-900">
+                            <span>Suresh & Anitha</span>
+                            <span class="text-[10px] text-amber-600 font-normal">Attending All Events</span>
+                        </div>
+                        <p class="text-gray-600 text-[11px] mt-0.5 italic">"Heartiest congratulations! Excited for the Sangeet dance!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="py-6 text-center text-xs text-amber-800/70 border-t border-amber-200/50 bg-white/50 backdrop-blur-xs relative z-20">
+        <p class="font-serif italic font-semibold text-amber-900">Your presence is our biggest blessing!</p>
+        <p class="text-[10px] text-gray-500 mt-1">With warm regards & excited hearts ❤️</p>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-amber-900 text-white text-xs py-2.5 px-5 rounded-full shadow-lg z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-amber-400"></i>
+        <span id="toastMsg">Message</span>
+    </div>
+
+    <script>
+        // Target wedding date: August 20, 2026, 11:00 AM IST
+        const targetDate = new Date('August 20, 2026 11:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = "<div class='col-span-4 text-amber-800 font-bold text-sm py-2 bg-amber-100 rounded-xl'>🎉 The Celebrations Have Begun! 🎉</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Envelope Control Functions
+        function openEnvelope() {
+            const envelope = document.getElementById('envelopeOverlay');
+            envelope.classList.add('opened');
+            triggerPetalBurst();
+            
+            // Auto start soundscape if available/permitted
+            if (!isPlaying) {
+                try {
+                    toggleAudio();
+                } catch(e) {}
+            }
+        }
+
+        function reopenEnvelope() {
+            const envelope = document.getElementById('envelopeOverlay');
+            envelope.classList.remove('opened');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Custom Toast Notification System
+        function showToast(msg, iconClass = "fa-circle-check") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            toastIcon.className = `fa-solid ${iconClass} text-amber-400`;
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Share functionality
+        function shareInvite() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Wedding Celebrations Invitation',
+                    text: 'We request your gracious presence & blessings at our wedding celebrations!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                const dummy = document.createElement('input');
+                document.body.appendChild(dummy);
+                dummy.value = window.location.href;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+                showToast('Invitation link copied to clipboard!');
+            }
+        }
+
+        // Add to Calendar helper
+        function addToCalendar(title, details, location, startGmt, endGmt) {
+            const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${startGmt}/${endGmt}`;
+            window.open(calUrl, '_blank');
+        }
+
+        // Theme Switcher
+        function setTheme(themeClass) {
+            document.body.className = `${themeClass} bg-pattern font-sans text-gray-800 antialiased min-h-screen flex flex-col justify-between relative overflow-x-hidden`;
+            showToast('Theme updated!');
+        }
+
+        // Petals Burst Confetti
+        function triggerPetalBurst() {
+            if (window.confetti) {
+                confetti({
+                    particleCount: 60,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#f59e0b', '#d97706', '#e11d48', '#fbbf24', '#fef3c7']
+                });
+            }
+            showToast('Blessings showered! 🌸');
+        }
+
+        let googleSheetUrl = localStorage.getItem('wedding_rsvp_script_url') || '';
+
+        // RSVP Handler with Google Sheets integration
+        async function handleRSVPSubmit(e) {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+
+            const name = document.getElementById('guestName').value.trim();
+            const attendance = document.getElementById('attendanceSelect').value;
+            const wish = document.getElementById('guestWish').value.trim();
+
+            if (!name) return;
+
+            // Show submitting indicator
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Saving RSVP...`;
+
+            // Post to Google Sheet if Web App URL is configured
+            if (googleSheetUrl) {
+                try {
+                    await fetch(googleSheetUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify({
+                            timestamp: new Date().toLocaleString(),
+                            name: name,
+                            attendance: attendance,
+                            wish: wish
+                        })
+                    });
+                } catch (err) {
+                    console.error('Error submitting to Google Sheet:', err);
+                }
+            }
+
+            // Append wish to local visual list
+            const wishesContainer = document.getElementById('wishesContainer');
+            const newWishCard = document.createElement('div');
+            newWishCard.className = "p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-xs animate-fade-in";
+            newWishCard.innerHTML = `
+                <div class="flex justify-between items-center font-bold text-amber-900">
+                    <span>${escapeHtml(name)}</span>
+                    <span class="text-[10px] text-amber-700 font-semibold">${escapeHtml(attendance)}</span>
+                </div>
+                ${wish ? `<p class="text-gray-600 text-[11px] mt-0.5 italic">"${escapeHtml(wish)}"</p>` : ''}
+            `;
+
+            wishesContainer.prepend(newWishCard);
+            document.getElementById('rsvpForm').reset();
+
+            // Reset submit button state
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+
+            triggerPetalBurst();
+            if (googleSheetUrl) {
+                showToast('Thank you! RSVP recorded.');
+            } else {
+                showToast('Thank you for your response & warm wishes!');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML;
+        }
+
+        // Web Audio Lighthearted Melody Synth (No external broken audio URLs)
+        let audioCtx = null;
+        let isPlaying = false;
+        let melodyInterval = null;
+
+        function toggleAudio() {
+            const btnText = document.getElementById('musicText');
+            const btnIcon = document.getElementById('musicIcon');
+
+            if (!isPlaying) {
+                startSynthesizedMelody();
+                isPlaying = true;
+                if (btnText) btnText.innerText = "Pause Music";
+                if (btnIcon) btnIcon.className = "fa-solid fa-pause text-amber-600";
+                showToast("Playing lighthearted joyful melody 🎵");
+            } else {
+                stopSynthesizedMelody();
+                isPlaying = false;
+                if (btnText) btnText.innerText = "Play Music";
+                if (btnIcon) btnIcon.className = "fa-solid fa-music";
+            }
+        }
+
+        function startSynthesizedMelody() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            // Lighthearted, cheerful major pentatonic acoustic bell & chime scale
+            const notes = [293.66, 329.63, 369.99, 440.00, 493.88, 587.33, 659.25, 739.99]; 
+            let step = 0;
+
+            melodyInterval = setInterval(() => {
+                if (!isPlaying || !audioCtx) return;
+                
+                const freq = notes[Math.floor(Math.random() * notes.length)];
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                // Gentle sine wave for warm, lighthearted acoustic chime tones
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.85);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.85);
+
+                // Play light harmony notes periodically for a sweet arpeggio effect
+                if (step % 3 === 0) {
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(freq * 1.25, audioCtx.currentTime + 0.12);
+                    gain2.gain.setValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                    gain2.gain.exponentialRampToValueAtTime(0.03, audioCtx.currentTime + 0.18);
+                    gain2.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.75);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start(audioCtx.currentTime + 0.12);
+                    osc2.stop(audioCtx.currentTime + 0.75);
+                }
+
+                step++;
+            }, 420);
+        }
+
+        function stopSynthesizedMelody() {
+            if (melodyInterval) {
+                clearInterval(melodyInterval);
+                melodyInterval = null;
+            }
+        }
+
+        // Ambient Falling Petals Canvas Simulation
+        const canvas = document.getElementById('petalCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const petals = Array.from({ length: 22 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 8 + 6,
+            speedY: Math.random() * 1 + 0.5,
+            speedX: Math.random() * 0.8 - 0.4,
+            rotation: Math.random() * 360,
+            rotSpeed: Math.random() * 2 - 1,
+            color: Math.random() > 0.5 ? 'rgba(245, 158, 11, 0.6)' : 'rgba(225, 29, 72, 0.5)'
+        }));
+
+        function animatePetals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            petals.forEach(p => {
+                p.y += p.speedY;
+                p.x += Math.sin(p.y * 0.01) * p.speedX;
+                p.rotation += p.rotSpeed;
+
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            requestAnimationFrame(animatePetals);
+        }
+        animatePetals();
+    </script>
+</body>
+</html>
