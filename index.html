@@ -402,7 +402,6 @@
             </div>
         </div>
 
-        <!-- RSVP Section -->
         <div class="bg-white/90 border border-amber-200 rounded-3xl p-6 card-shadow space-y-4">
             <div class="text-center space-y-1">
                 <span class="text-2xl">✍️</span>
@@ -468,62 +467,8 @@
         <span id="toastMsg">Message</span>
     </div>
 
-    <!-- Realtime Firestore Synchronization Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'wedding-invite-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-
-        let db = null;
-        let auth = null;
-
-        if (firebaseConfig) {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-            const authPromise = authToken ? signInWithCustomToken(auth, authToken) : signInAnonymously(auth);
-
-            authPromise.then(() => {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'blessings');
-                
-                // Realtime synchronization across all guests
-                onSnapshot(docRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        if (data && typeof data.count === 'number') {
-                            window.updateBlessingsCountDisplay(data.count);
-                        }
-                    } else {
-                        setDoc(docRef, { count: 108 }, { merge: true });
-                    }
-                }, (err) => console.warn("Firestore count error:", err));
-            }).catch(err => console.warn("Auth error:", err));
-        }
-
-        // Global increment handler called when anyone clicks the button
-        window.incrementBlessingsCounter = async function() {
-            let current = parseInt(localStorage.getItem('blessings_count') || '108', 10);
-            current++;
-            window.updateBlessingsCountDisplay(current);
-
-            if (db && auth && auth.currentUser) {
-                try {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'blessings');
-                    await setDoc(docRef, { count: increment(1) }, { merge: true });
-                } catch(e) {
-                    console.warn("Error incrementing Firestore count:", e);
-                }
-            }
-        };
-    </script>
-
     <script>
-        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyOqL-B4cESNzVeX1S0-_4NjkbWXgJTdSVV0P-vIUh6brXF9nDPoKEmh7_8Qaupav6h/exec";
+        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzOaBKTKjEh8IuNS0ECOEJK76rFOad56_ZgARcCn3ARLq-RifOLQQ7HkcPIqW6t1SEB/exec";
 
         let localBlessingCount = parseInt(localStorage.getItem('blessings_count') || '108', 10);
 
@@ -536,8 +481,38 @@
             if (totalText) totalText.innerText = `✨ ${count.toLocaleString()} Blessings showered by loved ones`;
         }
 
+        // Fetch global count on page load
+        async function fetchGlobalBlessingsCount() {
+            if (!GOOGLE_SHEET_URL) return;
+            try {
+                const res = await fetch(GOOGLE_SHEET_URL);
+                const data = await res.json();
+                if (data && typeof data.count === 'number' && data.count > 0) {
+                    updateBlessingsCountDisplay(data.count);
+                }
+            } catch (err) {
+                console.warn("Error fetching global blessing count:", err);
+            }
+        }
+
+        // Send increment to Google Sheet
+        async function syncIncrementToGoogleSheet() {
+            if (!GOOGLE_SHEET_URL) return;
+            try {
+                await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'increment_blessings' })
+                });
+            } catch (err) {
+                console.warn("Error syncing blessing count:", err);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             updateBlessingsCountDisplay(localBlessingCount);
+            fetchGlobalBlessingsCount();
         });
 
         const targetDate = new Date('August 20, 2026 11:00:00').getTime();
@@ -625,12 +600,12 @@
                 setTimeout(() => plus.remove(), 1000);
             }
 
-            // Increment the counter globally in real time
-            if (window.incrementBlessingsCounter) {
-                window.incrementBlessingsCounter();
-            } else {
-                updateBlessingsCountDisplay(localBlessingCount + 1);
-            }
+            // Immediately increment local UI display
+            const newCount = localBlessingCount + 1;
+            updateBlessingsCountDisplay(newCount);
+
+            // Sync globally to Google Sheet
+            syncIncrementToGoogleSheet();
 
             showToast('Blessings showered! 🌸');
         }
