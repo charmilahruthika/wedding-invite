@@ -97,6 +97,19 @@
             animation: pulseGlow 2.5s infinite ease-in-out;
         }
 
+        /* Floating +1 Blessing Animation */
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            50% { transform: translateY(-25px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1); opacity: 0; }
+        }
+        .floating-plus {
+            position: absolute;
+            animation: floatUp 1s ease-out forwards;
+            pointer-events: none;
+            color: #d97706;
+        }
+
         /* Canvas background for falling petals */
         #petalCanvas {
             position: fixed;
@@ -131,16 +144,13 @@
             <div class="absolute -bottom-12 -right-12 w-28 h-28 border-4 border-amber-400/20 rounded-full"></div>
 
             <div class="space-y-2 relative z-10">
-                <div class="text-4xl floating">🪔</div>
-                <p class="text-[11px] uppercase tracking-widest text-amber-200/90 font-bold">You are cordially invited</p>
+                <div class="text-4xl floating">🌸</div>
+                <p class="text-[11px] uppercase tracking-widest text-amber-200/90 font-bold">You are cordially invited to the wedding of</p>
             </div>
 
             <div class="bg-amber-900/60 border border-amber-400/30 rounded-2xl p-6 space-y-3 relative z-10 shadow-inner">
                 <p class="font-cursive text-3xl text-amber-300 font-bold" id="envelopeCoupleNames">
                     Hruthika & Akhil
-                </p>
-                <p class="text-xs text-amber-100/90 leading-relaxed">
-                    We request the honor of your presence and blessings on our special occasion.
                 </p>
             </div>
 
@@ -180,7 +190,7 @@
         <!-- Main Hero Card -->
         <div class="bg-white/95 rounded-3xl p-6 sm:p-8 text-center gold-border card-shadow relative overflow-hidden">
             <div class="text-amber-600 text-4xl mb-1 floating">
-                🪔
+                🌸
             </div>
             
             <p class="text-[11px] uppercase tracking-widest text-amber-700 font-bold mb-3">Together with our friends & family</p>
@@ -195,10 +205,15 @@
                 We can't wait to celebrate the start of our forever with the people who mean the world to us. Bring your big smiles and your best dance moves!
             </p>
 
-            <div class="mt-5">
-                <button onclick="triggerPetalBurst()" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs py-2.5 px-5 rounded-full shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
+            <!-- Interactive Blessings Button with Live Counter -->
+            <div class="mt-5 flex flex-col items-center gap-1.5 relative">
+                <button id="blessingsBtn" onclick="triggerPetalBurst(event)" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs py-2.5 px-5 rounded-full shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:scale-95 cursor-pointer relative">
                     <span>🌸 Shower Blessings 🌸</span>
+                    <!-- <span id="blessingBadge" class="bg-amber-950/30 text-amber-100 px-2 py-0.5 rounded-full text-[10px] font-semibold border border-amber-200/30">108</span> -->
                 </button>
+                <p class="text-[10px] text-amber-800 font-semibold tracking-wide">
+                    <span id="totalBlessingsText">✨ 108 Blessings showered by loved ones</span>
+                </p>
             </div>
 
             <!-- Countdown Timer -->
@@ -425,6 +440,7 @@
                 </button>
             </form>
 
+            <!-- Digital Wishes Wall -->
             <div class="pt-4 border-t border-amber-100">
                 <p class="text-[11px] font-bold uppercase tracking-wider text-amber-800 mb-2 flex items-center gap-1.5">
                     <i class="fa-solid fa-heart text-rose-500"></i> Warm Wishes from Friends & Family
@@ -432,10 +448,10 @@
                 <div id="wishesContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
                     <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-100 text-xs">
                         <div class="flex justify-between items-center font-bold text-amber-900">
-                            <span>Suresh & Anitha</span>
+                            <span>Devasena & Baahubali</span>
                             <span class="text-[10px] text-amber-600 font-normal">Attending All Events</span>
                         </div>
-                        <p class="text-gray-600 text-[11px] mt-0.5 italic">"Heartiest congratulations! Excited for the Sangeet dance!"</p>
+                        <p class="text-gray-600 text-[11px] mt-0.5 italic">"May your saga be as legendary as Mahishmati! Ready to conquer the Sangeet dance floor with you both! 🏹✨"</p>
                     </div>
                 </div>
             </div>
@@ -453,8 +469,75 @@
         <span id="toastMsg">Message</span>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'wedding-invite-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+        let db = null;
+        let auth = null;
+
+        if (firebaseConfig) {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+            const authPromise = authToken ? signInWithCustomToken(auth, authToken) : signInAnonymously(auth);
+
+            authPromise.then(() => {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'blessings');
+                
+                // Realtime synchronization across all guests
+                onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data && typeof data.count === 'number') {
+                            window.updateBlessingsCountDisplay(data.count);
+                        }
+                    } else {
+                        setDoc(docRef, { count: 108 }, { merge: true });
+                    }
+                }, (err) => console.warn("Firestore count error:", err));
+            }).catch(err => console.warn("Auth error:", err));
+        }
+
+        window.incrementBlessingsCounter = async function() {
+            let current = parseInt(localStorage.getItem('blessings_count') || '108', 10);
+            current++;
+            window.updateBlessingsCountDisplay(current);
+
+            if (db && auth && auth.currentUser) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'blessings');
+                    await setDoc(docRef, { count: increment(1) }, { merge: true });
+                } catch(e) {
+                    console.warn("Error incrementing Firestore count:", e);
+                }
+            }
+        };
+    </script>
+
     <script>
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyOqL-B4cESNzVeX1S0-_4NjkbWXgJTdSVV0P-vIUh6brXF9nDPoKEmh7_8Qaupav6h/exec";
+
+        let localBlessingCount = parseInt(localStorage.getItem('blessings_count') || '108', 10);
+
+        function updateBlessingsCountDisplay(count) {
+            localBlessingCount = count;
+            localStorage.setItem('blessings_count', count);
+            const badge = document.getElementById('blessingBadge');
+            const totalText = document.getElementById('totalBlessingsText');
+            if (badge) badge.innerText = count.toLocaleString();
+            if (totalText) totalText.innerText = `✨ ${count.toLocaleString()} Blessings showered by loved ones`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateBlessingsCountDisplay(localBlessingCount);
+        });
 
         const targetDate = new Date('August 20, 2026 11:00:00').getTime();
 
@@ -519,7 +602,7 @@
             window.open(calUrl, '_blank');
         }
 
-        function triggerPetalBurst() {
+        function triggerPetalBurst(event) {
             if (window.confetti) {
                 confetti({
                     particleCount: 60,
@@ -528,6 +611,26 @@
                     colors: ['#f59e0b', '#d97706', '#e11d48', '#fbbf24', '#fef3c7']
                 });
             }
+
+            // Spawn floating +1 🌸 visual animation
+            if (event && event.currentTarget) {
+                const btn = event.currentTarget;
+                const plus = document.createElement('div');
+                plus.className = 'floating-plus text-xs font-bold';
+                plus.innerText = '🌸 +1';
+                plus.style.left = `${btn.offsetWidth / 2 - 12}px`;
+                plus.style.top = `0px`;
+                btn.appendChild(plus);
+                setTimeout(() => plus.remove(), 1000);
+            }
+
+            // Increment the counter
+            if (window.incrementBlessingsCounter) {
+                window.incrementBlessingsCounter();
+            } else {
+                updateBlessingsCountDisplay(localBlessingCount + 1);
+            }
+
             showToast('Blessings showered! 🌸');
         }
 
