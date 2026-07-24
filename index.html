@@ -209,7 +209,6 @@
             <div class="mt-5 flex flex-col items-center gap-1.5 relative">
                 <button id="blessingsBtn" onclick="triggerPetalBurst(event)" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs py-2.5 px-5 rounded-full shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:scale-95 cursor-pointer relative">
                     <span>🌸 Shower Blessings 🌸</span>
-                    <!-- <span id="blessingBadge" class="bg-amber-950/30 text-amber-100 px-2 py-0.5 rounded-full text-[10px] font-semibold border border-amber-200/30">108</span> -->
                 </button>
                 <p class="text-[10px] text-amber-800 font-semibold tracking-wide">
                     <span id="totalBlessingsText">✨ 108 Blessings showered by loved ones</span>
@@ -469,6 +468,7 @@
         <span id="toastMsg">Message</span>
     </div>
 
+    <!-- Realtime Firestore Synchronization Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -505,6 +505,7 @@
             }).catch(err => console.warn("Auth error:", err));
         }
 
+        // Global increment handler called when anyone clicks the button
         window.incrementBlessingsCounter = async function() {
             let current = parseInt(localStorage.getItem('blessings_count') || '108', 10);
             current++;
@@ -624,7 +625,7 @@
                 setTimeout(() => plus.remove(), 1000);
             }
 
-            // Increment the counter
+            // Increment the counter globally in real time
             if (window.incrementBlessingsCounter) {
                 window.incrementBlessingsCounter();
             } else {
@@ -702,11 +703,11 @@
             const btnIcon = document.getElementById('musicIcon');
 
             if (!isPlaying) {
-                startSynthesizedMelody();
                 isPlaying = true;
+                startSynthesizedMelody();
                 if (btnText) btnText.innerText = "Pause Music";
                 if (btnIcon) btnIcon.className = "fa-solid fa-pause text-amber-600";
-                showToast("Playing lighthearted joyful melody 🎵");
+                showToast("Playing Sitha Kalyanam Vaibhogame 🎵");
             } else {
                 stopSynthesizedMelody();
                 isPlaying = false;
@@ -723,50 +724,83 @@
                 audioCtx.resume();
             }
 
-            const notes = [293.66, 329.63, 369.99, 440.00, 493.88, 587.33, 659.25, 739.99]; 
-            let step = 0;
+            // "Seetha Kalyanam Vaibhogame, Rama Kalyanam Vaibhogame" notes sequence
+            const melodySequence = [
+                { freq: 392.00, duration: 0.45 }, // See
+                { freq: 440.00, duration: 0.45 }, // tha
+                { freq: 493.88, duration: 0.50 }, // Ka
+                { freq: 523.25, duration: 0.50 }, // lya
+                { freq: 493.88, duration: 0.45 }, // nam
+                { freq: 440.00, duration: 0.45 }, // Vai
+                { freq: 392.00, duration: 0.65 }, // bho
+                { freq: 440.00, duration: 0.50 }, // ga
+                { freq: 392.00, duration: 0.85 }, // me
+                { freq: 0,      duration: 0.30 }, // Pause
 
-            melodyInterval = setInterval(() => {
+                { freq: 587.33, duration: 0.45 }, // Ra
+                { freq: 523.25, duration: 0.45 }, // ma
+                { freq: 493.88, duration: 0.50 }, // Ka
+                { freq: 523.25, duration: 0.50 }, // lya
+                { freq: 493.88, duration: 0.45 }, // nam
+                { freq: 440.00, duration: 0.45 }, // Vai
+                { freq: 392.00, duration: 0.65 }, // bho
+                { freq: 440.00, duration: 0.50 }, // ga
+                { freq: 392.00, duration: 0.85 }, // me
+                { freq: 0,      duration: 0.40 }, // Pause
+            ];
+
+            let noteIndex = 0;
+
+            function playNextNote() {
                 if (!isPlaying || !audioCtx) return;
-                
-                const freq = notes[Math.floor(Math.random() * notes.length)];
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
 
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                const note = melodySequence[noteIndex];
+                noteIndex = (noteIndex + 1) % melodySequence.length;
 
-                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 0.08);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.85);
+                if (note.freq > 0) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
 
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
+                    // Warm acoustic flute timbre
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(note.freq, audioCtx.currentTime);
 
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.85);
+                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.06, audioCtx.currentTime + 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + note.duration);
 
-                if (step % 3 === 0) {
-                    const osc2 = audioCtx.createOscillator();
-                    const gain2 = audioCtx.createGain();
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(freq * 1.25, audioCtx.currentTime + 0.12);
-                    gain2.gain.setValueAtTime(0.001, audioCtx.currentTime + 0.12);
-                    gain2.gain.exponentialRampToValueAtTime(0.03, audioCtx.currentTime + 0.18);
-                    gain2.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.75);
-                    osc2.connect(gain2);
-                    gain2.connect(audioCtx.destination);
-                    osc2.start(audioCtx.currentTime + 0.12);
-                    osc2.stop(audioCtx.currentTime + 0.75);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + note.duration);
+
+                    // Add soft bass drone harmonic
+                    if (noteIndex % 3 === 0) {
+                        const osc2 = audioCtx.createOscillator();
+                        const gain2 = audioCtx.createGain();
+                        osc2.type = 'sine';
+                        osc2.frequency.setValueAtTime(note.freq * 0.5, audioCtx.currentTime);
+                        gain2.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                        gain2.gain.exponentialRampToValueAtTime(0.02, audioCtx.currentTime + 0.08);
+                        gain2.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + note.duration);
+                        osc2.connect(gain2);
+                        gain2.connect(audioCtx.destination);
+                        osc2.start();
+                        osc2.stop(audioCtx.currentTime + note.duration);
+                    }
                 }
 
-                step++;
-            }, 420);
+                const delay = (note.duration || 0.5) * 1000;
+                melodyInterval = setTimeout(playNextNote, delay);
+            }
+
+            playNextNote();
         }
 
         function stopSynthesizedMelody() {
             if (melodyInterval) {
-                clearInterval(melodyInterval);
+                clearTimeout(melodyInterval);
                 melodyInterval = null;
             }
         }
