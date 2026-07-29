@@ -66,6 +66,15 @@
             opacity: 0.95;
         }
 
+        /* Card background image style for Hero Card */
+        .card-with-bg {
+            position: relative;
+            background-image: url('bg.jpeg'), url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
         .gold-border {
             border: 2px solid var(--border-color);
             box-shadow: inset 0 0 15px rgba(217, 119, 6, 0.08);
@@ -131,13 +140,27 @@
             transform: scale(1.05);
             pointer-events: none;
         }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="theme-gold bg-pattern font-sans text-gray-800 antialiased min-h-screen flex flex-col justify-between relative overflow-x-hidden">
 
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <img src="bg.jpeg" 
+             alt="Wedding Background" 
+             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1000&auto=format&fit=crop';" 
+             class="w-full h-full object-cover object-center filter brightness-95 opacity-25">
+    </div>
+
     <canvas id="petalCanvas"></canvas>
 
-    <!-- ROYAL INTERACTIVE ENVELOPE OVERLAY -->
     <div id="envelopeOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-amber-950/95 backdrop-blur-md">
         <div class="relative w-full max-w-md bg-gradient-to-b from-amber-900 to-amber-950 rounded-3xl p-6 sm:p-8 gold-border shadow-2xl text-center space-y-6 overflow-hidden">
             <div class="absolute -top-12 -left-12 w-28 h-28 border-4 border-amber-400/20 rounded-full"></div>
@@ -187,55 +210,67 @@
 
     <main class="max-w-xl mx-auto px-4 py-6 w-full space-y-6 relative z-20">
 
-        <!-- Main Hero Card -->
-        <div class="bg-white/95 rounded-3xl p-6 sm:p-8 text-center gold-border card-shadow relative overflow-hidden">
-            <div class="text-amber-600 text-4xl mb-1 floating">
-                🌸
-            </div>
-            
-            <p class="text-[11px] uppercase tracking-widest text-amber-700 font-bold mb-3">Together with our friends & family</p>
-            
-            <p class="text-xs text-gray-500 italic mb-1">We joyfully request your blessings for the wedding of</p>
-            
-            <h1 class="font-cursive text-4xl sm:text-5xl gradient-text my-2 py-1 font-bold leading-tight" id="coupleNamesDisplay">
-                Hruthika & Akhil
-            </h1>
+        <!-- Main Hero Card with Card Background Image -->
+        <div class="card-with-bg rounded-3xl p-6 sm:p-8 text-center gold-border card-shadow relative overflow-hidden">
+            <!-- Frosted Readability Tint -->
+            <div class="absolute inset-0 bg-white/90 backdrop-blur-[2px] z-0"></div>
 
-            <p class="text-gray-600 text-xs sm:text-sm mt-3 max-w-sm mx-auto leading-relaxed">
-                We can't wait to celebrate the start of our forever with the people who mean the world to us. Bring your big smiles and your best dance moves!
-            </p>
+            <div class="relative z-10">
+                <!-- Single Circular Golden Frame -->
+                <div class="flex items-center justify-center mb-4 relative">
+                    <div class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-xl transform hover:scale-105 transition duration-300">
+                        <div class="w-full h-full rounded-full overflow-hidden relative border-2 border-white">
+                            <img src="dp.jpeg" 
+                                 alt="Hruthika & Akhil" 
+                                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=400&auto=format&fit=crop';" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Interactive Blessings Button with Live Counter -->
-            <div class="mt-5 flex flex-col items-center gap-1.5 relative">
-                <button id="blessingsBtn" onclick="triggerPetalBurst(event)" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs py-2.5 px-5 rounded-full shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:scale-95 cursor-pointer relative">
-                    <span>🌸 Shower Blessings 🌸</span>
-                </button>
-                <p class="text-[10px] text-amber-800 font-semibold tracking-wide">
-                    <span id="totalBlessingsText">✨ 108 Blessings showered by loved ones</span>
+                <p class="text-[11px] uppercase tracking-widest text-amber-700 font-bold mb-2">Together with our friends & family</p>
+                <p class="text-xs text-gray-500 italic mb-1">We joyfully request your blessings for the wedding of</p>
+                
+                <h1 class="font-cursive text-4xl sm:text-5xl gradient-text my-2 py-1 font-bold leading-tight" id="coupleNamesDisplay">
+                    Hruthika & Akhil
+                </h1>
+
+                <p class="text-gray-600 text-xs sm:text-sm mt-3 max-w-sm mx-auto leading-relaxed">
+                    We can't wait to celebrate the start of our forever with the people who mean the world to us. Bring your big smiles and your best dance moves!
                 </p>
-            </div>
 
-            <!-- Countdown Timer -->
-            <div class="mt-6 pt-5 border-t border-amber-100">
-                <p class="text-[11px] uppercase tracking-widest text-gray-500 mb-3 font-bold flex items-center justify-center gap-1">
-                    <i class="fa-regular fa-clock text-amber-600"></i> Countdown to Festivities
-                </p>
-                <div class="grid grid-cols-4 gap-2 text-center" id="countdown">
-                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
-                        <span id="days" class="block font-serif text-2xl font-bold text-amber-900">00</span>
-                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Days</span>
-                    </div>
-                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
-                        <span id="hours" class="block font-serif text-2xl font-bold text-amber-900">00</span>
-                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Hours</span>
-                    </div>
-                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
-                        <span id="minutes" class="block font-serif text-2xl font-bold text-amber-900">00</span>
-                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Mins</span>
-                    </div>
-                    <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
-                        <span id="seconds" class="block font-serif text-2xl font-bold text-amber-900">00</span>
-                        <span class="text-[9px] text-amber-700 font-semibold uppercase">Secs</span>
+                <!-- Interactive Blessings Button with Live Counter -->
+                <div class="mt-5 flex flex-col items-center gap-1.5 relative">
+                    <button id="blessingsBtn" onclick="triggerPetalBurst(event)" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs py-2.5 px-5 rounded-full shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:scale-95 cursor-pointer relative">
+                        <span>🌸 Shower Blessings 🌸</span>
+                    </button>
+                    <p class="text-[10px] text-amber-800 font-semibold tracking-wide">
+                        <span id="totalBlessingsText">✨ <span id="blessingBadge">108</span> Blessings showered by loved ones</span>
+                    </p>
+                </div>
+
+                <!-- Countdown Timer -->
+                <div class="mt-6 pt-5 border-t border-amber-100">
+                    <p class="text-[11px] uppercase tracking-widest text-gray-500 mb-3 font-bold flex items-center justify-center gap-1">
+                        <i class="fa-regular fa-clock text-amber-600"></i> Countdown to Festivities
+                    </p>
+                    <div class="grid grid-cols-4 gap-2 text-center" id="countdown">
+                        <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                            <span id="days" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                            <span class="text-[9px] text-amber-700 font-semibold uppercase">Days</span>
+                        </div>
+                        <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                            <span id="hours" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                            <span class="text-[9px] text-amber-700 font-semibold uppercase">Hours</span>
+                        </div>
+                        <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                            <span id="minutes" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                            <span class="text-[9px] text-amber-700 font-semibold uppercase">Mins</span>
+                        </div>
+                        <div class="bg-amber-50/80 p-2 rounded-xl border border-amber-200/60">
+                            <span id="seconds" class="block font-serif text-2xl font-bold text-amber-900">00</span>
+                            <span class="text-[9px] text-amber-700 font-semibold uppercase">Secs</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -260,7 +295,7 @@
 
             <!-- Event Card 1: Sangeet -->
             <div class="bg-white rounded-2xl p-5 border border-amber-200/80 card-shadow hover:border-amber-400 transition relative">
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-3 relative z-10">
                     <div class="space-y-1.5 flex-1">
                         <h3 class="font-serif text-2xl font-bold text-gray-900">Sangeet Celebration</h3>
                         <div class="text-xs text-gray-600 font-medium space-y-1 pt-1">
@@ -275,7 +310,7 @@
 
             <!-- Event Card 2: Pre-Wedding Reception -->
             <div class="bg-white rounded-2xl p-5 border border-amber-200/80 card-shadow hover:border-amber-400 transition relative">
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-3 relative z-10">
                     <div class="space-y-1.5 flex-1">
                         <h3 class="font-serif text-2xl font-bold text-gray-900">Pre-Wedding Reception</h3>
                         <div class="text-xs text-gray-600 font-medium space-y-1 pt-1">
@@ -290,7 +325,7 @@
 
             <!-- Event Card 3: Pelli Muhurtham -->
             <div class="bg-gradient-to-br from-amber-50 to-orange-50/70 rounded-2xl p-5 border-2 border-amber-400 card-shadow relative">
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-3 relative z-10">
                     <div class="space-y-1.5 flex-1">
                         <h3 class="font-serif text-2xl font-bold text-amber-950">Pelli Muhurtham</h3>
                         <div class="text-xs text-amber-900 font-semibold space-y-1 pt-1">
@@ -304,38 +339,58 @@
             </div>
 
             <!-- Venue Info Box Kothapeta -->
-            <div class="bg-amber-950 text-white p-5 rounded-2xl space-y-3.5 shadow-md">
-                <div class="flex items-start gap-3">
-                    <i class="fa-solid fa-utensils text-amber-400 mt-1"></i>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Hospitality</p>
-                        <p class="text-xs font-semibold text-amber-50">Delicious Traditional Lunch & Gala Dinner Served</p>
+            <div class="bg-amber-950 text-white p-5 rounded-2xl space-y-3.5 shadow-md border border-amber-400/30 relative">
+                <div class="relative z-10 space-y-3.5">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-utensils text-amber-400 mt-1"></i>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Hospitality</p>
+                            <p class="text-xs font-semibold text-amber-50">Delicious Traditional Lunch & Gala Dinner Served</p>
+                        </div>
+                    </div>
+                    <hr class="border-amber-800/80">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-map-pin text-amber-400 mt-1"></i>
+                        <div class="flex-1">
+                            <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Venue Location</p>
+                            <p class="text-sm font-bold text-white">Sri Kari Subhakari Convention</p>
+                            <p class="text-xs text-amber-200/90 mt-0.5 leading-snug">Bank Colony, Kothapeta, Andhra Pradesh 533223</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <a href="https://maps.app.goo.gl/Q4JZiPbDhQLiUVUk6" target="_blank" 
+                           class="flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center">
+                            <i class="fa-solid fa-diamond-turn-right"></i> Google Maps
+                        </a>
+                        <button onclick="addToCalendar('Wedding Events', 'Sangeet, Pre-Wedding & Pelli Muhurtham', 'Sri Kari Subhakari Convention, Kothapeta', '20260820T053000Z', '20260821T020000Z')" 
+                                class="flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 rounded-xl transition border border-amber-400/30 text-center">
+                            <i class="fa-regular fa-calendar-plus"></i> Add Calendar
+                        </button>
                     </div>
                 </div>
-                <hr class="border-amber-800/80">
-                <div class="flex items-start gap-3">
-                    <i class="fa-solid fa-map-pin text-amber-400 mt-1"></i>
-                    <div class="flex-1">
-                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Venue Location</p>
-                        <p class="text-sm font-bold text-white">Sri Kari Subhakari Convention</p>
-                        <p class="text-xs text-amber-200/90 mt-0.5 leading-snug">Bank Colony, Kothapeta, Andhra Pradesh 533223</p>
+            </div>
+
+            <!-- Wedding Live Stream Placeholder Card -->
+            <div class="bg-gradient-to-r from-red-950 via-amber-950 to-red-950 text-white p-4 rounded-2xl space-y-2 shadow-md border border-rose-500/40 relative">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-600 text-white animate-pulse">
+                            🔴 LIVE
+                        </span>
+                        <span class="text-xs font-bold text-amber-200">Wedding Muhurtham Broadcast</span>
                     </div>
+                    <i class="fa-solid fa-video text-amber-400 text-xs"></i>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <a href="https://maps.app.goo.gl/Q4JZiPbDhQLiUVUk6" target="_blank" 
-                       class="flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center">
-                        <i class="fa-solid fa-diamond-turn-right"></i> Google Maps
-                    </a>
-                    <button onclick="addToCalendar('Wedding Events', 'Sangeet, Pre-Wedding & Pelli Muhurtham', 'Sri Kari Subhakari Convention, Kothapeta', '20260820T053000Z', '20260821T020000Z')" 
-                            class="flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 rounded-xl transition border border-amber-400/30 text-center">
-                        <i class="fa-regular fa-calendar-plus"></i> Add Calendar
-                    </button>
-                </div>
+                <p class="text-[11px] text-amber-100/80 leading-snug">Can't be there in person? Watch the auspicious ceremonies live online!</p>
+                <a href="https://youtube.com/live/your-wedding-stream-id" target="_blank" 
+                   onclick="if(this.href.includes('your-wedding-stream-id')){ event.preventDefault(); showToast('Live stream placeholder link! Update with your YouTube/Zoom URL.', 'fa-video'); }"
+                   class="flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center cursor-pointer">
+                    <i class="fa-brands fa-youtube text-sm"></i> Watch Wedding Live Stream
+                </a>
             </div>
         </div>
 
-        <!-- Divider Motif -->
         <div class="flex items-center justify-center gap-3 py-1 text-amber-600">
             <div class="h-px bg-amber-300/60 flex-1"></div>
             <span class="text-sm">🌸 🪷 🌸</span>
@@ -354,7 +409,7 @@
 
             <!-- Event Card 4: Reception -->
             <div class="bg-white rounded-2xl p-5 border border-amber-200/80 card-shadow hover:border-amber-400 transition relative">
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-3 relative z-10">
                     <div class="space-y-1.5 flex-1">
                         <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
                             🎉 Grand Celebration
@@ -371,85 +426,108 @@
             </div>
 
             <!-- Venue Info Box Tuni -->
-            <div class="bg-amber-950 text-white p-5 rounded-2xl space-y-3.5 shadow-md">
-                <div class="flex items-start gap-3">
-                    <i class="fa-solid fa-utensils text-amber-400 mt-1"></i>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Hospitality</p>
-                        <p class="text-xs font-semibold text-amber-50">Followed by Grand Gala Banquet Dinner</p>
+            <div class="bg-amber-950 text-white p-5 rounded-2xl space-y-3.5 shadow-md border border-amber-400/30 relative">
+                <div class="relative z-10 space-y-3.5">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-utensils text-amber-400 mt-1"></i>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Hospitality</p>
+                            <p class="text-xs font-semibold text-amber-50">Followed by Grand Gala Banquet Dinner</p>
+                        </div>
                     </div>
-                </div>
-                <hr class="border-amber-800/80">
-                <div class="flex items-start gap-3">
-                    <i class="fa-solid fa-map-pin text-amber-400 mt-1"></i>
-                    <div class="flex-1">
-                        <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Venue Location</p>
-                        <p class="text-sm font-bold text-white">Sai SitaRama Convention Hall</p>
-                        <p class="text-xs text-amber-200/90 mt-0.5 leading-snug">Near Narayana School, Tuni, Andhra Pradesh 533401</p>
+                    <hr class="border-amber-800/80">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-map-pin text-amber-400 mt-1"></i>
+                        <div class="flex-1">
+                            <p class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Venue Location</p>
+                            <p class="text-sm font-bold text-white">Sai SitaRama Convention Hall</p>
+                            <p class="text-xs text-amber-200/90 mt-0.5 leading-snug">Near Narayana School, Tuni, Andhra Pradesh 533401</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <a href="https://maps.app.goo.gl/932QwUEhFcQM6Gr17" target="_blank" 
-                       class="flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center">
-                        <i class="fa-solid fa-diamond-turn-right"></i> Google Maps
-                    </a>
-                    <button onclick="addToCalendar('Grand Wedding Reception', 'Grand Wedding Reception & Gala Dinner', 'Sai SitaRama Convention Hall, Tuni', '20260822T130000Z', '20260822T173000Z')" 
-                            class="flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 rounded-xl transition border border-amber-400/30 text-center">
-                        <i class="fa-regular fa-calendar-plus"></i> Add Calendar
-                    </button>
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <a href="https://maps.app.goo.gl/932QwUEhFcQM6Gr17" target="_blank" 
+                           class="flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center">
+                            <i class="fa-solid fa-diamond-turn-right"></i> Google Maps
+                        </a>
+                        <button onclick="addToCalendar('Grand Wedding Reception', 'Grand Wedding Reception & Gala Dinner', 'Sai SitaRama Convention Hall, Tuni', '20260822T130000Z', '20260822T173000Z')" 
+                                class="flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs py-2 px-3 rounded-xl transition border border-amber-400/30 text-center">
+                            <i class="fa-regular fa-calendar-plus"></i> Add Calendar
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Reception Live Stream Placeholder Card -->
+            <div class="bg-gradient-to-r from-red-950 via-amber-950 to-red-950 text-white p-4 rounded-2xl space-y-2 shadow-md border border-rose-500/40 relative">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-600 text-white animate-pulse">
+                            🔴 LIVE
+                        </span>
+                        <span class="text-xs font-bold text-amber-200">Reception Celebration Broadcast</span>
+                    </div>
+                    <i class="fa-solid fa-video text-amber-400 text-xs"></i>
+                </div>
+                <p class="text-[11px] text-amber-100/80 leading-snug">Join the celebration remotely and share the joy live!</p>
+                <a href="https://youtube.com/live/your-reception-stream-id" target="_blank" 
+                   onclick="if(this.href.includes('your-reception-stream-id')){ event.preventDefault(); showToast('Live stream placeholder link! Update with your YouTube/Zoom URL.', 'fa-video'); }"
+                   class="flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-bold text-xs py-2 px-3 rounded-xl transition shadow-xs text-center cursor-pointer">
+                    <i class="fa-brands fa-youtube text-sm"></i> Watch Reception Live Stream
+                </a>
             </div>
         </div>
 
-        <div class="bg-white/90 border border-amber-200 rounded-3xl p-6 card-shadow space-y-4">
-            <div class="text-center space-y-1">
-                <span class="text-2xl">✍️</span>
-                <h3 class="font-serif text-2xl font-bold text-amber-950">RSVP & Send Blessings</h3>
-                <p class="text-xs text-gray-500">Let us know if you'll be joining, or leave a sweet wish!</p>
-            </div>
-
-            <form id="rsvpForm" onsubmit="handleRSVPSubmit(event)" class="space-y-3 pt-2">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Your Name</label>
-                        <input type="text" id="guestName" required placeholder="e.g. Ramesh & Family" 
-                               class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Attending Events?</label>
-                        <select id="attendanceSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30">
-                            <option value="Both Venues">Yes! Attending All Events</option>
-                            <option value="Kothapeta Only">Attending Kothapeta Events</option>
-                            <option value="Tuni Only">Attending Tuni Reception</option>
-                            <option value="In Spirit">Sending Love & Blessings</option>
-                        </select>
-                    </div>
+        <div class="bg-white/90 border border-amber-200 rounded-3xl p-6 card-shadow space-y-4 relative">
+            <div class="relative z-10 space-y-4">
+                <div class="text-center space-y-1">
+                    <span class="text-2xl">✍️</span>
+                    <h3 class="font-serif text-2xl font-bold text-amber-950">RSVP & Send Blessings</h3>
+                    <p class="text-xs text-gray-500">Let us know if you'll be joining, or leave a sweet wish!</p>
                 </div>
 
-                <div>
-                    <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Your Wishes / Note for Couple</label>
-                    <textarea id="guestWish" rows="2" placeholder="Wishing you a lifetime of joy, love, and laughter! 💕" 
-                              class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30"></textarea>
-                </div>
-
-                <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition shadow-xs">
-                    <i class="fa-solid fa-paper-plane mr-1.5"></i> Submit RSVP & Wish
-                </button>
-            </form>
-
-            <!-- Digital Wishes Wall -->
-            <div class="pt-4 border-t border-amber-100">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-amber-800 mb-2 flex items-center gap-1.5">
-                    <i class="fa-solid fa-heart text-rose-500"></i> Warm Wishes from Friends & Family
-                </p>
-                <div id="wishesContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
-                    <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-100 text-xs">
-                        <div class="flex justify-between items-center font-bold text-amber-900">
-                            <span>Devasena & Baahubali</span>
-                            <span class="text-[10px] text-amber-600 font-normal">Attending All Events</span>
+                <form id="rsvpForm" onsubmit="handleRSVPSubmit(event)" class="space-y-3 pt-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Your Name</label>
+                            <input type="text" id="guestName" required placeholder="e.g. Ramesh & Family" 
+                                   class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30">
                         </div>
-                        <p class="text-gray-600 text-[11px] mt-0.5 italic">"May your saga be as legendary as Mahishmati! Ready to conquer the Sangeet dance floor with you both! 🏹✨"</p>
+                        <div>
+                            <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Attending Events?</label>
+                            <select id="attendanceSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30">
+                                <option value="Both Venues">Yes! Attending All Events</option>
+                                <option value="Kothapeta Only">Attending Kothapeta Events</option>
+                                <option value="Tuni Only">Attending Tuni Reception</option>
+                                <option value="In Spirit">Sending Love & Blessings</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-amber-900 uppercase mb-1">Your Wishes / Note for Couple</label>
+                        <textarea id="guestWish" rows="2" placeholder="Wishing you a lifetime of joy, love, and laughter! 💕" 
+                                  class="w-full px-3 py-2 text-xs rounded-xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition shadow-xs cursor-pointer">
+                        <i class="fa-solid fa-paper-plane mr-1.5"></i> Submit RSVP & Wish
+                    </button>
+                </form>
+
+                <!-- Digital Wishes Wall -->
+                <div class="pt-4 border-t border-amber-100">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-amber-800 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-heart text-rose-500"></i> Warm Wishes from Friends & Family
+                    </p>
+                    <div id="wishesContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-100 text-xs">
+                            <div class="flex justify-between items-center font-bold text-amber-900">
+                                <span>Devasena & Baahubali</span>
+                                <span class="text-[10px] text-amber-600 font-normal">Attending All Events</span>
+                            </div>
+                            <p class="text-gray-600 text-[11px] mt-0.5 italic">"May your saga be as legendary as Mahishmati! Ready to conquer the Sangeet dance floor with you both! 🏹✨"</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -468,124 +546,74 @@
     </div>
 
     <script>
+        // Google Sheet Web App URL for backend RSVP & Blessing storage
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzOaBKTKjEh8IuNS0ECOEJK76rFOad56_ZgARcCn3ARLq-RifOLQQ7HkcPIqW6t1SEB/exec";
 
         let localBlessingCount = parseInt(localStorage.getItem('blessings_count') || '108', 10);
+        let audioCtx = null;
+        let bgAudio = null;
+        let isPlaying = false;
+        let melodyInterval = null;
 
-        function updateBlessingsCountDisplay(count) {
-            localBlessingCount = count;
-            localStorage.setItem('blessings_count', count);
-            const badge = document.getElementById('blessingBadge');
-            const totalText = document.getElementById('totalBlessingsText');
-            if (badge) badge.innerText = count.toLocaleString();
-            if (totalText) totalText.innerText = `✨ ${count.toLocaleString()} Blessings showered by loved ones`;
-        }
-
-        // Fetch global count on page load
-        async function fetchGlobalBlessingsCount() {
-            if (!GOOGLE_SHEET_URL) return;
-            try {
-                const res = await fetch(GOOGLE_SHEET_URL);
-                const data = await res.json();
-                if (data && typeof data.count === 'number' && data.count > 0) {
-                    updateBlessingsCountDisplay(data.count);
-                }
-            } catch (err) {
-                console.warn("Error fetching global blessing count:", err);
-            }
-        }
-
-        // Send increment to Google Sheet
-        async function syncIncrementToGoogleSheet() {
-            if (!GOOGLE_SHEET_URL) return;
-            try {
-                await fetch(GOOGLE_SHEET_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: 'increment_blessings' })
-                });
-            } catch (err) {
-                console.warn("Error syncing blessing count:", err);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateBlessingsCountDisplay(localBlessingCount);
-            fetchGlobalBlessingsCount();
-        });
-
-        const targetDate = new Date('August 20, 2026 11:00:00').getTime();
-
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            if (distance < 0) {
-                document.getElementById('countdown').innerHTML = "<div class='col-span-4 text-amber-800 font-bold text-sm py-2 bg-amber-100 rounded-xl'>🎉 The Celebrations Have Begun! 🎉</div>";
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('days').innerText = String(days).padStart(2, '0');
-            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
-            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
-        }
-
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
-        function openEnvelope() {
+        // Explicitly declare functions on Window to guarantee global availability
+        window.openEnvelope = function() {
             const envelope = document.getElementById('envelopeOverlay');
-            envelope.classList.add('opened');
-            triggerPetalBurst();
+            if (envelope) {
+                envelope.classList.add('opened');
+            }
+            window.triggerPetalBurst();
             
             if (!isPlaying) {
                 try {
-                    toggleAudio();
-                } catch(e) {}
+                    window.toggleAudio();
+                } catch(e) {
+                    console.warn("Audio play prevented:", e);
+                }
             }
-        }
+        };
 
-        function reopenEnvelope() {
+        window.reopenEnvelope = function() {
             const envelope = document.getElementById('envelopeOverlay');
-            envelope.classList.remove('opened');
+            if (envelope) {
+                envelope.classList.remove('opened');
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        };
 
-        function showToast(msg, iconClass = "fa-circle-check") {
+        window.showToast = function(msg, iconClass = "fa-circle-check") {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             const toastIcon = document.getElementById('toastIcon');
 
+            if (!toast || !toastMsg) return;
+
             toastMsg.innerText = msg;
-            toastIcon.className = `fa-solid ${iconClass} text-amber-400`;
+            if (toastIcon) {
+                toastIcon.className = `fa-solid ${iconClass} text-amber-400`;
+            }
 
             toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
             
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
             }, 3000);
-        }
+        };
 
-        function addToCalendar(title, details, location, startGmt, endGmt) {
+        window.addToCalendar = function(title, details, location, startGmt, endGmt) {
             const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${startGmt}/${endGmt}`;
             window.open(calUrl, '_blank');
-        }
+        };
 
-        function triggerPetalBurst(event) {
+        window.triggerPetalBurst = function(event) {
             if (window.confetti) {
-                confetti({
-                    particleCount: 60,
-                    spread: 80,
-                    origin: { y: 0.6 },
-                    colors: ['#f59e0b', '#d97706', '#e11d48', '#fbbf24', '#fef3c7']
-                });
+                try {
+                    confetti({
+                        particleCount: 60,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        colors: ['#f59e0b', '#d97706', '#e11d48', '#fbbf24', '#fef3c7']
+                    });
+                } catch(e) {}
             }
 
             // Spawn floating +1 🌸 visual animation
@@ -600,20 +628,85 @@
                 setTimeout(() => plus.remove(), 1000);
             }
 
-            // Immediately increment local UI display
+            // Increment local display & sync to Google Sheet
             const newCount = localBlessingCount + 1;
-            updateBlessingsCountDisplay(newCount);
+            window.updateBlessingsCountDisplay(newCount);
+            window.syncIncrementToGoogleSheet();
+            window.showToast('Blessings showered! 🌸');
+        };
 
-            // Sync globally to Google Sheet
-            syncIncrementToGoogleSheet();
+        window.updateBlessingsCountDisplay = function(count) {
+            localBlessingCount = count;
+            localStorage.setItem('blessings_count', count);
+            const badge = document.getElementById('blessingBadge');
+            const totalText = document.getElementById('totalBlessingsText');
+            if (badge) badge.innerText = count.toLocaleString();
+            if (totalText && !badge) totalText.innerText = `✨ ${count.toLocaleString()} Blessings showered by loved ones`;
+        };
 
-            showToast('Blessings showered! 🌸');
+        window.fetchGlobalBlessingsCount = async function() {
+            if (!GOOGLE_SHEET_URL) return;
+            try {
+                const res = await fetch(GOOGLE_SHEET_URL);
+                const data = await res.json();
+                if (data && typeof data.count === 'number' && data.count > 0) {
+                    window.updateBlessingsCountDisplay(data.count);
+                }
+            } catch (err) {
+                console.warn("Error fetching global blessing count:", err);
+            }
+        };
+
+        window.syncIncrementToGoogleSheet = async function() {
+            if (!GOOGLE_SHEET_URL) return;
+            try {
+                await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'increment_blessings' })
+                });
+            } catch (err) {
+                console.warn("Error syncing blessing count:", err);
+            }
+        };
+
+        const targetDate = new Date('August 21, 2026 03:53:00').getTime();
+
+        function updateCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            if (!countdownEl) return;
+
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                countdownEl.innerHTML = "<div class='col-span-4 text-amber-800 font-bold text-sm py-2 bg-amber-100 rounded-xl'>🎉 The Celebrations Have Begun! 🎉</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+
+            if (daysEl) daysEl.innerText = String(days).padStart(2, '0');
+            if (hoursEl) hoursEl.innerText = String(hours).padStart(2, '0');
+            if (minutesEl) minutesEl.innerText = String(minutes).padStart(2, '0');
+            if (secondsEl) secondsEl.innerText = String(seconds).padStart(2, '0');
         }
 
-        async function handleRSVPSubmit(e) {
+        setInterval(updateCountdown, 1000);
+
+        window.handleRSVPSubmit = async function(e) {
             e.preventDefault();
             const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
+            const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Submit';
 
             const name = document.getElementById('guestName').value.trim();
             const attendance = document.getElementById('attendanceSelect').value;
@@ -621,8 +714,10 @@
 
             if (!name) return;
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Saving RSVP...`;
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Saving RSVP...`;
+            }
 
             if (GOOGLE_SHEET_URL) {
                 try {
@@ -643,25 +738,29 @@
             }
 
             const wishesContainer = document.getElementById('wishesContainer');
-            const newWishCard = document.createElement('div');
-            newWishCard.className = "p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-xs animate-fade-in";
-            newWishCard.innerHTML = `
-                <div class="flex justify-between items-center font-bold text-amber-900">
-                    <span>${escapeHtml(name)}</span>
-                    <span class="text-[10px] text-amber-700 font-semibold">${escapeHtml(attendance)}</span>
-                </div>
-                ${wish ? `<p class="text-gray-600 text-[11px] mt-0.5 italic">"${escapeHtml(wish)}"</p>` : ''}
-            `;
+            if (wishesContainer) {
+                const newWishCard = document.createElement('div');
+                newWishCard.className = "p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-xs animate-fade-in";
+                newWishCard.innerHTML = `
+                    <div class="flex justify-between items-center font-bold text-amber-900">
+                        <span>${escapeHtml(name)}</span>
+                        <span class="text-[10px] text-amber-700 font-semibold">${escapeHtml(attendance)}</span>
+                    </div>
+                    ${wish ? `<p class="text-gray-600 text-[11px] mt-0.5 italic">"${escapeHtml(wish)}"</p>` : ''}
+                `;
+                wishesContainer.prepend(newWishCard);
+            }
 
-            wishesContainer.prepend(newWishCard);
             document.getElementById('rsvpForm').reset();
 
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
 
-            triggerPetalBurst();
-            showToast('Thank you! Your RSVP & wish have been saved.');
-        }
+            window.triggerPetalBurst();
+            window.showToast('Thank you! Your RSVP & wish have been saved.');
+        };
 
         function escapeHtml(text) {
             const div = document.createElement('div');
@@ -669,27 +768,48 @@
             return div.innerHTML;
         }
 
-        let audioCtx = null;
-        let isPlaying = false;
-        let melodyInterval = null;
-
-        function toggleAudio() {
+        window.toggleAudio = function() {
             const btnText = document.getElementById('musicText');
             const btnIcon = document.getElementById('musicIcon');
 
             if (!isPlaying) {
                 isPlaying = true;
-                startSynthesizedMelody();
-                if (btnText) btnText.innerText = "Pause Music";
-                if (btnIcon) btnIcon.className = "fa-solid fa-pause text-amber-600";
-                showToast("Playing Sitha Kalyanam Vaibhogame 🎵");
+
+                if (!bgAudio) {
+                    bgAudio = new Audio('music.mp3');
+                    bgAudio.loop = true;
+                    // Lower volume setting (25%)
+                    bgAudio.volume = 0.25;
+
+                    bgAudio.onerror = function() {
+                        console.warn("music.mp3 not found, falling back to synthesized melody.");
+                        startSynthesizedMelody();
+                    };
+                }
+
+                const playPromise = bgAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        if (btnText) btnText.innerText = "Pause Music";
+                        if (btnIcon) btnIcon.className = "fa-solid fa-pause text-amber-600";
+                        window.showToast("Playing Wedding Music 🎵");
+                    }).catch(() => {
+                        startSynthesizedMelody();
+                        if (btnText) btnText.innerText = "Pause Music";
+                        if (btnIcon) btnIcon.className = "fa-solid fa-pause text-amber-600";
+                        window.showToast("Playing Sitha Kalyanam Vaibhogame 🎵");
+                    });
+                }
             } else {
-                stopSynthesizedMelody();
                 isPlaying = false;
+                if (bgAudio) {
+                    bgAudio.pause();
+                }
+                stopSynthesizedMelody();
                 if (btnText) btnText.innerText = "Play Music";
                 if (btnIcon) btnIcon.className = "fa-solid fa-music";
             }
-        }
+        };
 
         function startSynthesizedMelody() {
             if (!audioCtx) {
@@ -699,29 +819,27 @@
                 audioCtx.resume();
             }
 
-            // "Seetha Kalyanam Vaibhogame, Rama Kalyanam Vaibhogame" notes sequence
             const melodySequence = [
-                { freq: 392.00, duration: 0.45 }, // See
-                { freq: 440.00, duration: 0.45 }, // tha
-                { freq: 493.88, duration: 0.50 }, // Ka
-                { freq: 523.25, duration: 0.50 }, // lya
-                { freq: 493.88, duration: 0.45 }, // nam
-                { freq: 440.00, duration: 0.45 }, // Vai
-                { freq: 392.00, duration: 0.65 }, // bho
-                { freq: 440.00, duration: 0.50 }, // ga
-                { freq: 392.00, duration: 0.85 }, // me
-                { freq: 0,      duration: 0.30 }, // Pause
-
-                { freq: 587.33, duration: 0.45 }, // Ra
-                { freq: 523.25, duration: 0.45 }, // ma
-                { freq: 493.88, duration: 0.50 }, // Ka
-                { freq: 523.25, duration: 0.50 }, // lya
-                { freq: 493.88, duration: 0.45 }, // nam
-                { freq: 440.00, duration: 0.45 }, // Vai
-                { freq: 392.00, duration: 0.65 }, // bho
-                { freq: 440.00, duration: 0.50 }, // ga
-                { freq: 392.00, duration: 0.85 }, // me
-                { freq: 0,      duration: 0.40 }, // Pause
+                { freq: 392.00, duration: 0.45 },
+                { freq: 440.00, duration: 0.45 },
+                { freq: 493.88, duration: 0.50 },
+                { freq: 523.25, duration: 0.50 },
+                { freq: 493.88, duration: 0.45 },
+                { freq: 440.00, duration: 0.45 },
+                { freq: 392.00, duration: 0.65 },
+                { freq: 440.00, duration: 0.50 },
+                { freq: 392.00, duration: 0.85 },
+                { freq: 0,      duration: 0.30 },
+                { freq: 587.33, duration: 0.45 },
+                { freq: 523.25, duration: 0.45 },
+                { freq: 493.88, duration: 0.50 },
+                { freq: 523.25, duration: 0.50 },
+                { freq: 493.88, duration: 0.45 },
+                { freq: 440.00, duration: 0.45 },
+                { freq: 392.00, duration: 0.65 },
+                { freq: 440.00, duration: 0.50 },
+                { freq: 392.00, duration: 0.85 },
+                { freq: 0,      duration: 0.40 },
             ];
 
             let noteIndex = 0;
@@ -736,12 +854,12 @@
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
 
-                    // Warm acoustic flute timbre
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(note.freq, audioCtx.currentTime);
 
+                    // Soft audio level (2%)
                     gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.06, audioCtx.currentTime + 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.02, audioCtx.currentTime + 0.06);
                     gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + note.duration);
 
                     osc.connect(gain);
@@ -749,21 +867,6 @@
 
                     osc.start();
                     osc.stop(audioCtx.currentTime + note.duration);
-
-                    // Add soft bass drone harmonic
-                    if (noteIndex % 3 === 0) {
-                        const osc2 = audioCtx.createOscillator();
-                        const gain2 = audioCtx.createGain();
-                        osc2.type = 'sine';
-                        osc2.frequency.setValueAtTime(note.freq * 0.5, audioCtx.currentTime);
-                        gain2.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                        gain2.gain.exponentialRampToValueAtTime(0.02, audioCtx.currentTime + 0.08);
-                        gain2.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + note.duration);
-                        osc2.connect(gain2);
-                        gain2.connect(audioCtx.destination);
-                        osc2.start();
-                        osc2.stop(audioCtx.currentTime + note.duration);
-                    }
                 }
 
                 const delay = (note.duration || 0.5) * 1000;
@@ -781,9 +884,10 @@
         }
 
         const canvas = document.getElementById('petalCanvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas ? canvas.getContext('2d') : null;
 
         function resizeCanvas() {
+            if (!canvas) return;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
@@ -791,8 +895,8 @@
         resizeCanvas();
 
         const petals = Array.from({ length: 22 }, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
+            x: Math.random() * (canvas ? canvas.width : 400),
+            y: Math.random() * (canvas ? canvas.height : 800),
             size: Math.random() * 8 + 6,
             speedY: Math.random() * 1 + 0.5,
             speedX: Math.random() * 0.8 - 0.4,
@@ -802,6 +906,7 @@
         }));
 
         function animatePetals() {
+            if (!ctx || !canvas) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             petals.forEach(p => {
@@ -826,7 +931,14 @@
 
             requestAnimationFrame(animatePetals);
         }
-        animatePetals();
+
+        // DOM Loaded initializations
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCountdown();
+            window.updateBlessingsCountDisplay(localBlessingCount);
+            window.fetchGlobalBlessingsCount();
+            if (ctx) animatePetals();
+        });
     </script>
 </body>
 </html>
